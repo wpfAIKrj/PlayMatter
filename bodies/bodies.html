@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <title>bodies - 物体</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        .control {
+          width: 800px;
+          display: flex;
+          flex-direction: row;
+          justify-content: space-around;
+          margin: 20px;
+        }
+        p {
+          width: 100px;
+          height: 40px;
+          background-color: black;
+          color: coral;
+          font-size: 14px;
+          text-align: center;
+          line-height: 40px;
+          cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+  <div class="control">
+    <p id="circle">增加一个圆形</p>
+    <p id="rectangle">增加一个矩形</p>
+    <p id="trapezoid">增加一个三角形</p>
+    <p id="every">随机增加</p>
+  </div>
+    <script src="../matter.min.js"></script>
+    <script src="../base.js"></script>
+    <script>
+
+        // 创建刚体
+        var rect = Bodies.rectangle(200, 100, 50, 50), // 矩形 (x轴, y轴, 宽, 高)
+            circle = Bodies.circle(300, 100, 25), // 圆 (x轴, y轴, 半径)
+            polygon = Bodies.polygon(450, 100, 5, 25), // 多边形 (x轴, y轴, 边数, 半径)
+            trapezoid = Bodies.trapezoid(590, 100, 50, 50, 1); // 三角形 (x轴, y轴, 宽, 高, 坡度)
+
+        // 将刚体添加到世界中
+        World.add(engine.world, [rect, circle, polygon, trapezoid]);
+
+        var addCircle = function () {
+          return Bodies.circle(Math.random() * 800 + 30, 100, 30)
+        }
+
+        var addRectangle = function () {
+          return Bodies.rectangle(Math.random() * 800 + 30, 100, 50, 50)
+        }
+
+        var addTrapezoid = function () {
+          return Bodies.trapezoid(Math.random() * 800 + 30, 100, 50, 50, Math.random() * 5)
+        }
+
+        document.getElementById('circle').onclick=function(){
+          World.addBody(engine.world, addCircle());
+        }
+
+        document.getElementById('rectangle').onclick = function() {
+          World.addBody(engine.world, addRectangle());
+        }
+
+        document.getElementById('trapezoid').onclick = function() {
+          World.addBody(engine.world, addTrapezoid());
+        }
+
+        document.getElementById('every').onclick = function() {
+          var param = Math.random() * 3;
+          if (param <= 1) {
+            World.addBody(engine.world, addCircle());
+          } else if (param <= 2) {
+            World.addBody(engine.world, addRectangle());
+          } else {
+            World.addBody(engine.world, addTrapezoid());
+          }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <title>bridge - 桥梁</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+    <script src="../matter.min.js"></script>
+    <script src="../base.js"></script>
+    <script>
+
+        // 堆叠刚体
+        var stack = Composites.stack(200, 46, 6, 3, 0, 0, function(x, y) {
+            return Bodies.polygon(x, y, Math.round(Common.random(1, 8)), Common.random(20, 40));
+        });
+
+        // 堆叠桥梁
+        var group = Body.nextGroup(true);
+        var bridge = Composites.stack(150, 300, 9, 1, 10, 10, function(x, y) {
+            return Bodies.rectangle(x, y, 50, 20, {
+                collisionFilter: { // 过滤碰撞
+                    group: group 
+                }
+            });
+        });
+
+        // 创建链约束
+        Composites.chain(bridge, 0.5, 0, -0.5, 0, { stiffness: 0.9 });
+
+        World.add(engine.world, [
+            stack,
+            bridge,
+            Bodies.rectangle(80, 440, 120, 280, {
+                isStatic: true
+            }),
+            Bodies.rectangle(720, 440, 120, 280, {
+                isStatic : true
+            }),
+            Constraint.create({ // 创建约束
+                pointA: { // A点
+                    x: 140,
+                    y: 300
+                },
+                bodyB: bridge.bodies[0], // 约束刚体
+                pointB: { // B点
+                    x: -25,
+                    y: 0
+                }
+            }),
+            Constraint.create({
+                pointA: { // A点
+                    x: 660,
+                    y: 300
+                },
+                bodyB: bridge.bodies[8], // 约束刚体
+                pointB: { // B点
+                    x: 25,
+                    y: 0
+                }
+            })
+        ]);
+
+    </script>
+</body>
+</html>
