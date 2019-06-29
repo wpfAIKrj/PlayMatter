@@ -34,21 +34,40 @@
     <p id="trapezoid">增加一个三角形</p>
     <p id="every">随机增加</p>
   </div>
+
+  <div class="control">
+    <p id="rotate">旋转</p>
+    <p id="line">足球线性运动</p>
+    <p id="route">足球旋转运动</p>
+  </div>
     <script src="../matter.min.js"></script>
     <script src="../base.js"></script>
     <script>
 
         // 创建刚体
         var rect = Bodies.rectangle(200, 100, 50, 50), // 矩形 (x轴, y轴, 宽, 高)
-            circle = Bodies.circle(300, 100, 25), // 圆 (x轴, y轴, 半径)
+            circle = Bodies.circle(300, 100, 25,{
+              render: {
+                sprite: {
+                  texture: "../imgs/SoccerBall_0.png",
+                  xScale: 0.4,
+                  yScale: 0.4
+                }
+              }
+            }), // 圆 (x轴, y轴, 半径)
             polygon = Bodies.polygon(450, 100, 5, 25), // 多边形 (x轴, y轴, 边数, 半径)
             trapezoid = Bodies.trapezoid(590, 100, 50, 50, 1); // 三角形 (x轴, y轴, 宽, 高, 坡度)
 
+        circle.restitution = 1;
+        circle.frictionAir = 0.01
         // 将刚体添加到世界中
         World.add(engine.world, [rect, circle, polygon, trapezoid]);
 
         var addCircle = function () {
-          return Bodies.circle(Math.random() * 800 + 30, 100, 30)
+          var circleBall = Bodies.circle(Math.random() * 800 + 30, 100, 30);
+          circleBall.restitution = 1;
+          circleBall.frictionAir = 0.01
+          return circleBall;
         }
 
         var addRectangle = function () {
@@ -80,6 +99,18 @@
           } else {
             World.addBody(engine.world, addTrapezoid());
           }
+        }
+        
+        document.getElementById('rotate').onclick = function() {
+          Matter.Composite.rotate( engine.world, Math.PI/4, {x: 400, y: 340});
+        }
+
+        document.getElementById('line').onclick = function() {
+          Matter.Body.setVelocity( circle, {x: 10, y: -10});
+        }
+
+        document.getElementById('route').onclick = function() {
+          Matter.Body.setAngularVelocity( circle, Math.PI/6);
         }
     </script>
 </body>
